@@ -10,6 +10,10 @@ def listen(socketInUse):
     if line != "":
       if line != "\r\n":
         print line
+        line = line[line.rfind(':')+1:-2]
+        print line
+        if "quit" in line:
+          exit()
 
 #Config
 host = 'localhost'
