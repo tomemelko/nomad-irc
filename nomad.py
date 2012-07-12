@@ -11,8 +11,13 @@ def listen(socketInUse):
     if line != "":
       if line != "\r\n":
         print line
-        line = line[line.rfind(':')+1:-2]
-        print line
+        if "PING" in line:
+          print "PONG"
+          socketInUse.send("PONG\r\n")
+        if "PRIVMSG" in line:
+          sender = line[1:line.find('!')]
+          line = line[line.rfind(':')+1:-2]
+          print sender,"says",line
         if "quit" in line:
           exit()
 
