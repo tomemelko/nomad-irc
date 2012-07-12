@@ -5,22 +5,6 @@ from functools import partial
 import threading
 import time
 
-def listen(socketInUse):
-  while True:
-    line = socketInUse.recv(4096)
-    if line != "":
-      if line != "\r\n":
-        print line
-        if "PING" in line:
-          print "PONG"
-          socketInUse.send("PONG\r\n")
-        if "PRIVMSG" in line:
-          sender = line[1:line.find('!')]
-          line = line[line.rfind(':')+1:-2]
-          print sender,"says",line
-        if "quit" in line:
-          exit()
-
 #Config
 host = 'localhost'
 port = 6667
@@ -30,6 +14,21 @@ realname = 'nomadbot'
 owner = 'tom'
 channel = '\#nomad'
 readbuffer = ''
+
+def listen(socketInUse):
+  while True:
+    line = socketInUse.recv(4096)
+    if line != "":
+      if line != "\r\n":
+        if "PING" in line:
+          socketInUse.send("PONG\r\n")
+        if "PRIVMSG" in line:
+          sender = line[1:line.find('!')]
+          message = line[line.rfind(':')+1:-2]
+          if sender == owner and message == "quit":
+            exit()
+          print sender,"says",message
+          s.send('PRIVMSG #nomad Hello everybody!\r\n')
 
 #Connect to server and listen
 s = socket.socket()
@@ -46,4 +45,4 @@ print "Joining channel"
 s.send('JOIN #nomad \r\n')
 
 while listener.isAlive():
-  pass
+  time.sleep(5)
