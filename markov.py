@@ -17,10 +17,11 @@ def load(filepath):
       table.setdefault( (w1, w2), [] ).append(word)
       w1, w2 = w2, word
   table.setdefault( (w1, w2), [] ).append(nonword) # Mark the end of the file
+  return table
 
-def generate(files, number):                    
-  for file in files:
-    load(file)
+def generate(number, table):                    
+#  for file in files:
+#    load(file)
   # GENERATE OUTPUT
   w1 = nonword
   w2 = nonword
