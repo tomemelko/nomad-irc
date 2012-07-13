@@ -31,7 +31,8 @@ def generate(number, table):
   #for i in xrange(maxwords):
   while len(sentences) < number:
     newword = random.choice(table[(w1, w2)])
-    if newword == nonword: sys.exit()
+    if newword == nonword: 
+      return []
     if newword[-1] in sentenceend:
       joined = " ".join(sentence)
       if len(joined) > 1:
