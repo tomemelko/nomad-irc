@@ -61,16 +61,18 @@ def listen(socketInUse):
         if "PRIVMSG" in line:
           sender = line[1:line.find('!')]
           message = line[line.rfind(':')+1:-2]
-          if sender == owner and message == "quit":
-            exit()
-          print sender,"says",message
-          response = markov.generate(1000, table)
-          while len(response) == 0:
+          if "nomad" in message.lower():
+            if sender == owner and message == "quit":
+              exit()
+            print sender,"says",message
             response = markov.generate(1000, table)
-          s.send('PRIVMSG #nomad '+response[random.randint(0,1000)]+'\r\n')
+            while len(response) == 0:
+              response = markov.generate(1000, table)
+            s.send('PRIVMSG #nomad '+response[random.randint(0,1000)]+'\r\n')
 
 #Connect to server and listen
 s = socket.socket()
+time.sleep(1)
 listener = threading.Thread(target=partial(listen, s))
 listener.start()
 s.connect((host, port))
@@ -79,7 +81,7 @@ print "Sending USER",ident,host,"bla :",realname
 s.send('USER '+ident+' '+host+' bla :'+realname+'\r\n') #Identify to server 
 print "Sending NICK",nick
 s.send('NICK ' + nick + "\r\n")
-time.sleep(5)
+time.sleep(2)
 print "Joining channel"
 s.send('JOIN #nomad \r\n')
 
