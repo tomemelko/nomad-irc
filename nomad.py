@@ -7,6 +7,7 @@ import time
 import markov
 import random
 import os
+import cPickle as pickle
 
 #Config
 host = 'localhost'
@@ -16,12 +17,39 @@ ident = 'nomadbot'
 realname = 'nomadbot'
 owner = 'tom'
 channel = '\#nomad'
-srcdir = "srctxt/"
+srcdir = "srctxt.bk/"
+pickledtablepath = "table.pkl"
+pickledaddedfile = "loadedfiles.pkl"
+filesimported = False
 files = os.listdir(srcdir)
+loadedfiles = []
 table = {}
+
+if os.path.isfile(pickledaddedfile):
+  print "Found loaded file table"
+  with open(pickledaddedfile, 'r') as fp:
+    loadedfiles = pickle.load(fp)
+
+if os.path.isfile(pickledtablepath):
+  print "Found pickled table"
+  with open(pickledtablepath, 'r') as fp:
+    table = pickle.load(fp)
+    
 for file in files:
-  print "Loading:",srcdir+file
-  table.update(markov.load(srcdir+file))
+  if file not in loadedfiles:
+    print "Importing:",srcdir+file
+    table.update(markov.load(srcdir+file))
+    loadedfiles.append(file)
+    filesimported = True
+  
+if (filesimported):
+  with open(pickledtablepath, 'w') as fp:
+    print "Dumping table..."
+    pickle.dump(table, fp, 2) 
+  with open(pickledaddedfile, 'w') as fp:     
+    print "Dumping loaded file list"
+    pickle.dump(loadedfiles, fp, 2) 
+
   
 def listen(socketInUse):
   while True:
