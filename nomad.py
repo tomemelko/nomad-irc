@@ -4,6 +4,8 @@ import socket
 from functools import partial
 import threading
 import time
+import markov
+import random
 
 #Config
 host = 'localhost'
@@ -13,7 +15,7 @@ ident = 'nomadbot'
 realname = 'nomadbot'
 owner = 'tom'
 channel = '\#nomad'
-readbuffer = ''
+files = ["/home/tom/nltk_data/corpora/webtext/overheard_modified.txt"]
 
 def listen(socketInUse):
   while True:
@@ -28,7 +30,11 @@ def listen(socketInUse):
           if sender == owner and message == "quit":
             exit()
           print sender,"says",message
-          s.send('PRIVMSG #nomad Hello everybody!\r\n')
+          table = {}
+          for file in files:
+            table.update(markov.load(file))
+          response = markov.generate(1000, table)
+          s.send('PRIVMSG #nomad '+response[random.randint(0,1000)]+'\r\n')
 
 #Connect to server and listen
 s = socket.socket()
