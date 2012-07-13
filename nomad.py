@@ -6,6 +6,7 @@ import threading
 import time
 import markov
 import random
+import os
 
 #Config
 host = 'localhost'
@@ -15,8 +16,13 @@ ident = 'nomadbot'
 realname = 'nomadbot'
 owner = 'tom'
 channel = '\#nomad'
-files = ["/home/tom/nltk_data/corpora/webtext/overheard_modified.txt"]
-
+srcdir = "srctxt/"
+files = os.listdir(srcdir)
+table = {}
+for file in files:
+  print "Loading:",srcdir+file
+  table.update(markov.load(srcdir+file))
+  
 def listen(socketInUse):
   while True:
     line = socketInUse.recv(4096)
@@ -30,10 +36,9 @@ def listen(socketInUse):
           if sender == owner and message == "quit":
             exit()
           print sender,"says",message
-          table = {}
-          for file in files:
-            table.update(markov.load(file))
           response = markov.generate(1000, table)
+          while len(response) == 0:
+            response = markov.generate(1000, table)
           s.send('PRIVMSG #nomad '+response[random.randint(0,1000)]+'\r\n')
 
 #Connect to server and listen
