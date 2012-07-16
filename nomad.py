@@ -62,7 +62,7 @@ def listen(socketInUse):
           sender = line[1:line.find('!')]
           message = line[line.rfind(':')+1:-2]
           if "nomad" in message.lower():
-            if sender == owner and message == "quit":
+            if sender == owner and "quit" in message:
               exit()
             print sender,"says",message
             response = markov.generate(1000, table)
