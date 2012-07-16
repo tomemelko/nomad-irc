@@ -20,4 +20,4 @@ Personality
 
 His personality is based on the source material you feed him, if the stuff you feed him is vulgar, then he will be vulgar.
 
-With the currently loaded files he is a patriotic, movie-quoting, potty mouth. 
+With the currently loaded files he is a movie-quoting potty mouth. 
