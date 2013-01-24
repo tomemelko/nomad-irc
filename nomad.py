@@ -70,7 +70,7 @@ def listen(socketInUse):
             print sender,"says",message
             response = markov.generate(sentencecount, table)
             while len(response) == 0:
-              response = markov.generate(sentececount, table)
+              response = markov.generate(sentencecount, table)
             s.send('PRIVMSG #nomad '+response[random.randint(0,sentencecount)]+'\r\n')
 
 #Connect to server and listen
