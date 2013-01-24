@@ -24,6 +24,8 @@ filesimported = False
 files = os.listdir(srcdir)
 loadedfiles = []
 table = {}
+refreshinterval = 5
+sentencecount = 1000
 
 if os.path.isfile(pickledaddedfile):
   print "Found loaded file table"
@@ -61,14 +63,15 @@ def listen(socketInUse):
         if "PRIVMSG" in line:
           sender = line[1:line.find('!')]
           message = line[line.rfind(':')+1:-2]
-          if "nomad" in message.lower():
+          if "nomad" in message.lower() or "nomad:" in line:
             if sender == owner and "quit" in message:
+              print "Recieved quit command"
               exit()
             print sender,"says",message
-            response = markov.generate(1000, table)
+            response = markov.generate(sentencecount, table)
             while len(response) == 0:
-              response = markov.generate(1000, table)
-            s.send('PRIVMSG #nomad '+response[random.randint(0,1000)]+'\r\n')
+              response = markov.generate(sentececount, table)
+            s.send('PRIVMSG #nomad '+response[random.randint(0,sentencecount)]+'\r\n')
 
 #Connect to server and listen
 s = socket.socket()
@@ -86,4 +89,4 @@ print "Joining channel"
 s.send('JOIN #nomad \r\n')
 
 while listener.isAlive():
-  time.sleep(5)
+  time.sleep(refreshinterval)
